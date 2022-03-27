@@ -8,17 +8,14 @@ def calculateNewStatus(data, row, window, awake_parameter):
     return actual_status
   else:
     window_frame = data.loc[pos_row-window+1:pos_row]
-    empty_bed_probability = window_frame.loc[window_frame['status']==0].count().get('id')/window
-    full_bed_probability = window_frame.loc[(window_frame['status']==1) | (window_frame['status']==2)].count().get('id')/window
-    if(empty_bed_probability > awake_parameter*full_bed_probability):
-      return 0
-    elif actual_status == 0:
-      return 1
-    else:
-      return actual_status
+    sum = 0;
+    for status in window_frame['status']:
+      sum = sum + status
+    return sum/window
 
 def countAwakeMoments(data, statusName,f):
   data_awake = data.loc[data[statusName] == 0]
+  print(data_awake)
   count_awake_period = []
   countInstants= 1;
   previous_id = -1;
@@ -29,16 +26,14 @@ def countAwakeMoments(data, statusName,f):
     else:
       countInstants = countInstants + 1
     previous_id = id
-  count_awake_period.pop(0)
   f.write(str(count_awake_period))
   return len(count_awake_period)
 
-csvFile = "../Archivio/2022_03_15_bedsensordata.csv"
+csvFile = "../Archivio/2022_03_13_bedsensordata.csv"
 data = pd.read_csv(csvFile, sep=",")
 data = data.dropna(how="any", axis=0)
 
-f = open("../analyse2022_03_15-Group.txt", "w")
-countAwakeMoments(data,"status",f)
+f = open("../analyse2022_03_13-Group-averageStatus.txt", "w")
 
 f.write("file: " + csvFile)
 data["newStatus120"]=data.apply(lambda row: calculateNewStatus(data, row, 120, 0.8), axis=1)
