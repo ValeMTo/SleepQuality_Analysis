@@ -1,6 +1,5 @@
 
 import pandas as pd
-from datetime import datetime
 
 def calculateNewStatus(data, row, window, awake_parameter):
   pos_row = data.index[data['id'] == row['id']].tolist()[0]
@@ -31,14 +30,15 @@ def countAwakeMoments(data, statusName,f):
       countInstants = countInstants + 1
     previous_id = id
   count_awake_period.pop(0)
-  f.write(count_awake_period)
-  return len(count_awake_period);
+  f.write(str(count_awake_period))
+  return len(count_awake_period)
 
 csvFile = "../Archivio/2022_03_15_bedsensordata.csv"
 data = pd.read_csv(csvFile, sep=",")
 data = data.dropna(how="any", axis=0)
 
 f = open("../analyse2022_03_15-Group.txt", "w")
+countAwakeMoments(data,"status",f)
 
 f.write("file: " + csvFile)
 data["newStatus120"]=data.apply(lambda row: calculateNewStatus(data, row, 120, 0.8), axis=1)
