@@ -1,9 +1,9 @@
 
 import pandas as pd
-from datetime import datetime
 
 from StatusCalculation import reportLawStatus
 from AwakeFunction import awakeTimestamps
+from AuxiliaryFunction import calculateDifferenceColumns
 
 #Count errors in the csv file
 def calculateErrors(data, statusName):
@@ -26,10 +26,6 @@ def calculateErrors(data, statusName):
   if(count_b2b_error != 0):
     print("b2b errors during a movement:", (count_b2b_movement / count_b2b_error) * 100, "%")
     print("b2b errors with empty bed:", (count_b2b_empty_bed / count_b2b_error) * 100, "%")
-
-def calculateDifferenceColums(data, column1, column2):
-  count_differences = data.loc[data[column1] != data[column2]].count().get('id')
-  f.write("Difference between: " + column1 + " and "+ column2 + " is: "+ str((count_differences/data.count().get('id'))*100)+ "%\n")
 
 
 csvFile = "../Archivio/2022_03_14_bedsensordata.csv"
@@ -62,12 +58,12 @@ f.write("newStatus10: Number of \"awake\" moments:"+ str(awakeTimestamps(data,"n
 f.write("newStatus5: Number of \"awake\" moments:"+ str(awakeTimestamps(data,"newStatus5"))+"\n")
 f.write("\n")
 
-calculateDifferenceColums(data, "newStatus120", "status")
-calculateDifferenceColums(data, "newStatus60", "status")
-calculateDifferenceColums(data, "newStatus30", "status")
-calculateDifferenceColums(data, "newStatus15", "status")
-calculateDifferenceColums(data, "newStatus10", "status")
-calculateDifferenceColums(data, "newStatus5", "status")
+calculateDifferenceColumns(data, "newStatus120", "status")
+calculateDifferenceColumns(data, "newStatus60", "status")
+calculateDifferenceColumns(data, "newStatus30", "status")
+calculateDifferenceColumns(data, "newStatus15", "status")
+calculateDifferenceColumns(data, "newStatus10", "status")
+calculateDifferenceColumns(data, "newStatus5", "status")
 f.write("\n")
 
 f.close()

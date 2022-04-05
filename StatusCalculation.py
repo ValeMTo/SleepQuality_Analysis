@@ -34,3 +34,4 @@ def reportLawStatus(data, row, window, awake_parameter):
       return 1
     else:
       return actual_status
+
