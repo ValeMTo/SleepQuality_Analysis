@@ -8,7 +8,7 @@ csvFile = "../Archivio/2022_03_13_bedsensordata.csv"
 data = pd.read_csv(csvFile, sep=",")
 data = data.dropna(how="any", axis=0)
 
-f = open("../analyse2022_03_13-Group-averageStatus.txt", "w")
+f = open("../../analyse2022_03_13-Group-averageStatus.txt", "w")
 
 f.write("file: " + csvFile)
 data["newStatus120"]=data.apply(lambda row: statusAverage(data, row, 120), axis=1)

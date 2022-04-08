@@ -34,7 +34,7 @@ data = data.dropna(how="any", axis=0)
 
 count_awake = awakeTimestamps(data,"status")
 
-f = open("../analyse2022_03_14.txt", "w")
+f = open("../../analyse2022_03_14.txt", "w")
 
 f.write("file: " + csvFile)
 

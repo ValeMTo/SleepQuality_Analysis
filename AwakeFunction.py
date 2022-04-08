@@ -6,7 +6,7 @@ from datetime import datetime
 # All groups are considered only if there are at least two elements.
 # Write on the file the array and return the length of the array,
 # without counting cells with a number under 2 inside.
-def awakeIntoGroups(data, statusName,f):
+def awakeIntoGroups(data, statusName):
   data_awake = data.loc[data[statusName] == 0]
   count_awake_period = []
   countInstants= 1;
@@ -18,28 +18,30 @@ def awakeIntoGroups(data, statusName,f):
     else:
       countInstants = countInstants + 1
     previous_id = id
-  f.write(str(count_awake_period))
-  return len(count_awake_period)
+  return count_awake_period
 
 # Divides into groups the awake moments.
 # Count all zeros in each group and put the result into an array.
 # All groups are considered only if there are at least two elements.
 # Write on the file the array and return the length of the array,
 # without counting cells with a number under 2 inside.
-def awakeIntoGroupsVoid(data, statusName,f):
+def awakeIntoGroupsVoid(data, statusName,f, timestampFile):
   data_awake = data.loc[data[statusName] == 0]
   count_awake_period = []
   countInstants= 1;
   previous_id = -1;
-  for id in data_awake['id']:
+  for row in data_awake.iterrows():
+    id = row[0]
     if(abs(id-previous_id)>2):
-      count_awake_period.append(countInstants)
+      if(countInstants>10):
+        count_awake_period.append(countInstants)
       countInstants = 1;
+      timestampFile.write(row[1] + "\n")
     else:
       countInstants = countInstants + 1
     previous_id = id
-  f.write(len(count_awake_period),"\n")
-  f.write(str(count_awake_period),"\n")
+  f.write(str(len(count_awake_period)) + "\n")
+  f.write(str(count_awake_period) + "\n")
 
 # Divides into groups the awake moments thanks to timestamp.
 # Count all zeros in each group and put the result into an array.

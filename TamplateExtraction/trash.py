@@ -13,8 +13,9 @@ data = pd.read_csv(csvFile1, sep=";")
 tmp = pd.read_csv(csvFile2, sep=";", )
 tmp = tmp.dropna(how="any", axis=0)
 tmp = tmp.reset_index()
-tmp['id'] = tmp.index
-print(tmp)
+row = tmp.iloc[2]
+for row in tmp.iterrows():
+  print("row: ", row)
 #data["test"]=data.apply(lambda row: reportLawStatusTimeStamp(data, row, 3, 0.8), axis=1)
 
 data = pd.concat([data, tmp], ignore_index=True)

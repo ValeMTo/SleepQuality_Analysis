@@ -19,19 +19,19 @@ def statusAverage(data, row, window):
 # if it is false and the measured status was 0 then status id 1,
 # otherwise the measured status is equal to the new status.
 # The probability references to the probability of having X value in the status on the defined window.
-def reportLawStatus(data, row, window, awake_parameter):
-  pos_row = data.index[data['id'] == row['id']].tolist()[0]
+def reportLawStatus(data, row,window, awake_parameter):
+  posRow = row.name
   actual_status = row['status']
-  if(pos_row< window):
-    return actual_status
+  if(posRow< window):
+    window_frame = data.loc[0:posRow]
   else:
-    window_frame = data.loc[pos_row-window+1:pos_row]
-    empty_bed_probability = window_frame.loc[window_frame['status']==0].count().get('id')/window
-    full_bed_probability = window_frame.loc[(window_frame['status']==1) | (window_frame['status']==2)].count().get('id')/window
-    if(empty_bed_probability > awake_parameter*full_bed_probability):
-      return 0
-    elif actual_status == 0:
-      return 1
-    else:
-      return actual_status
+    window_frame = data.loc[posRow-window+1:posRow]
+  empty_bed_probability = window_frame.loc[window_frame['status']==0].count().get('id')/window
+  full_bed_probability = window_frame.loc[(window_frame['status']==1) | (window_frame['status']==2)].count().get('id')/window
+  if(empty_bed_probability > awake_parameter*full_bed_probability):
+    return 0
+  elif actual_status == 0:
+    return 1
+  else:
+    return actual_status
 
