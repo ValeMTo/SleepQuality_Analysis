@@ -8,3 +8,15 @@ def createNewStatusList(list):
   for num in list:
     newStatusList["newStatus" + str(num)] = num
   return newStatusList
+
+def createNewStatusAwakeList(list):
+  newStatusList = {}
+  for num in list:
+    newStatusList["newStatus_" + str(num)] = num
+  return newStatusList
+
+def createNewStatusAwakeFiveList(list):
+  newStatusList = {}
+  for num in list:
+    newStatusList["newStatus_" + str(num*5) + "_" + str(num)] = num
+  return newStatusList
