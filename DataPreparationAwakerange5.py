@@ -4,7 +4,7 @@ from SleepQuality.AuxiliaryFunction import createNewStatusAwakeFiveList
 
 def outputFileName(file):
   file = file[:-4]
-  file = file + "_elaborated5Sample.csv"
+  file = file + "_complex5Sample.csv"
   return file
 
 csvFile = []
@@ -25,11 +25,14 @@ csvFile.append("..\Archivio\EachSecond3\\bed_raw_2022-04-03_60-F1-89-29-82-44.cs
 csvFile.append("..\Archivio\EachSecond3\\bed_raw_2022-04-04_60-F1-89-29-82-44.csv")
 csvFile.append("..\Archivio\EachSecond3\\bed_raw_2022-04-05_60-F1-89-29-82-44.csv")
 
-windowToTest = [240, 180, 150, 120, 100, 90, 60, 45, 30, 20, 15, 10, 5]
+awakeToTest = [0.6, 0.7, 0.8, 0.9, 1]
+
+windowToTest = [150, 120, 100, 90, 60]
 for i in range(len(windowToTest)):
   windowToTest[i] = int(windowToTest[i]/5)
 
 statusGroup = createNewStatusAwakeFiveList(windowToTest)
+
 
 for numFile in range(14):
   print("From:", csvFile[numFile])
@@ -40,13 +43,11 @@ for numFile in range(14):
 
   data = data[['time_packet', 'hr', 'status', 'b2b']]
   data['id'] = data.index
-  data = data.drop(data[data['id']%5 != 0].index)
-  data = data.reset_index()
-  data['id'] = data.index
 
-  for newStatus, windowDim in statusGroup.items():
-    print("Elaborating", newStatus, "...")
-    data[newStatus]=data.apply(lambda row: reportLawStatus(data, row, windowDim, 0.8), axis=1)
+  for newStatus, windowValue in statusGroup.items():
+    for awakeValue in awakeToTest:
+      print("Elaborating", newStatus + "_" + str(awakeValue), "...")
+      data[newStatus+"_"+str(awakeValue)]=data.apply(lambda row: reportLawStatus(data, row, windowValue, awakeValue ), axis=1)
 
   data.to_csv(outputFileName(csvFile[numFile]), encoding='utf-8')
 
