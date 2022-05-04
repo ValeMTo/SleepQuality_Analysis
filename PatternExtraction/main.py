@@ -1,9 +1,9 @@
 
 import pandas as pd
 
-from StatusCalculation import reportLawStatus
-from AwakeFunction import awakeTimestamps
-from AuxiliaryFunction import calculateDifferenceColumns
+from SleepQuality.Libraries.StatusCalculation import reportLawStatus
+from SleepQuality.Libraries.AwakeFunction import awakeTimestamps
+from SleepQuality.Libraries.AuxiliaryFunction import calculateDifferenceColumns
 
 #Count errors in the csv file
 def calculateErrors(data, statusName):

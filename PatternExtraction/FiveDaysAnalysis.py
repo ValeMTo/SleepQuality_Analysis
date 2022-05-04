@@ -1,9 +1,31 @@
 
-from AwakeFunction import awakeIntoGroupsVoid
-from StatusCalculation import reportLawStatus
-from AuxiliaryFunction import calculateDifferenceColumns
-from AuxiliaryFunction import createNewStatusList
+from SleepQuality.Libraries.StatusCalculation import reportLawStatus
+from SleepQuality.Libraries.AuxiliaryFunction import calculateDifferenceColumns
+from SleepQuality.Libraries.AuxiliaryFunction import createNewStatusList
 import pandas as pd;
+
+# Divides into groups the awake moments.
+# Count all zeros in each group and put the result into an array.
+# All groups are considered only if there are at least two elements.
+# Write on the file the array and return the length of the array,
+# without counting cells with a number under 2 inside.
+def awakeIntoGroupsVoid(data, statusName,f, timestampFile):
+  data_awake = data.loc[data[statusName] == 0]
+  count_awake_period = []
+  countInstants= 1;
+  previous_id = -1;
+  for row in data_awake.iterrows():
+    id = row[0]
+    if(abs(id-previous_id)>2):
+      if(countInstants>10):
+        count_awake_period.append(countInstants)
+      countInstants = 1;
+      timestampFile.write(row[1] + "\n")
+    else:
+      countInstants = countInstants + 1
+    previous_id = id
+  f.write(str(len(count_awake_period)) + "\n")
+  f.write(str(count_awake_period) + "\n")
 
 windows = [120, 90, 60, 30, 20, 15, 10, 5]
 

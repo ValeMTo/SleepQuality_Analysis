@@ -1,8 +1,8 @@
 
 import pandas as pd
 
-from StatusCalculation import statusAverage
-from AwakeFunction import awakeIntoGroups
+from SleepQuality.Libraries.StatusCalculation import statusAverage
+from SleepQuality.Libraries.AwakeFunction import awakeIntoGroups
 
 csvFile = "../Archivio/2022_03_13_bedsensordata.csv"
 data = pd.read_csv(csvFile, sep=",")
