@@ -2,18 +2,20 @@ import pandas as pd
 from SleepQuality.Libraries.StatusCalculation import reportLawStatus
 from SleepQuality.Libraries.AuxiliaryFunction import createNewStatusList
 from SleepQuality.Libraries.AuxiliaryFunction import identifyMedian
-from SleepQuality.Libraries.notProcessedFile import csvFile
+from SleepQuality.Libraries.notProcessedFile import allCsvFiles
 
 #This file process data considering different types of filter window in the windowToTest array
 #A parameter is also the median window, better mantain 5 as value
 
+csvFile = allCsvFiles
+
 def outputFileName(file):
   file = file[:-4]
-  file = file + "_Good10Sample.csv"
+  file = file + "_Good9Sample.csv"
   return file
 
-windowToTest = [150, 120, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10]
-medianWindow = 10
+windowToTest = [150,120,90,70,60,30]
+medianWindow = 5
 statusGroup = createNewStatusList(windowToTest)
 
 for numFile in range(len(csvFile)):

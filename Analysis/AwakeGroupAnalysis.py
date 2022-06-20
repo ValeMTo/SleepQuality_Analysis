@@ -7,33 +7,29 @@ import numpy
 import matplotlib.pyplot as plt
 from SleepQuality.Libraries.AwakeFunction import awakeIntoGroups
 from SleepQuality.Libraries.AuxiliaryFunction import createNewStatusList
+from SleepQuality.Libraries.notProcessedFile import allCsvFiles
 
-csvFile = []
-csvFile.append("..\Archivio\EachSecond\\bed_raw_2022-03-24_60-F1-89-29-82-44_elaborated.csv")
-csvFile.append("..\Archivio\EachSecond\\bed_raw_2022-03-25_60-F1-89-29-82-44_elaborated.csv")
-csvFile.append("..\Archivio\EachSecond\\bed_raw_2022-03-26_60-F1-89-29-82-44_elaborated.csv")
-csvFile.append("..\Archivio\EachSecond\\bed_raw_2022-03-27_60-F1-89-29-82-44_elaborated.csv")
-csvFile.append("..\Archivio\EachSecond\\bed_raw_2022-03-28_60-F1-89-29-82-44_elaborated.csv")
+csvFile = allCsvFiles
 
-windowToTest = [240, 180, 150, 120, 100, 90, 60, 45, 30, 20, 15, 10, 5]
+windowToTest = [150, 120, 100, 90, 60, 50, 40, 30, 20, 10]
 statusGroup = createNewStatusList(windowToTest)
 completeStatusGroup = list(statusGroup.values())
 completeStatusGroup = list(map(str, completeStatusGroup))
 completeStatusGroup.insert(0, "Original")
-for numFile in range(5):
+for numFile in range(len(allCsvFiles)):
   print(csvFile[numFile])
   numAwakeGroups = []
   data = pd.read_csv(csvFile[numFile], sep=",")
 
   statusLevel = 2
-  awakeGroups= awakeIntoGroups(data, "status", 0)
+  awakeGroups= awakeIntoGroups(data, "status")
   numAwakeGroups.append(len(awakeGroups))
 
   statusPoints = numpy.copy(data.loc[data["status"] == 0].index)
   statusLevelPoints = ["status"] * statusPoints.size
   plt.scatter(statusPoints, statusLevelPoints, marker=".")
   for newStatus, windowDim in statusGroup.items():
-    awakeGroups = awakeIntoGroups(data, newStatus, 0)
+    awakeGroups = awakeIntoGroups(data, newStatus)
     numAwakeGroups.append(len(awakeGroups))
 
     statusLevel += 2

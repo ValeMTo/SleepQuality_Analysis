@@ -3,21 +3,24 @@
 # When can we be sure of the awake action?
 
 import pandas as pd
-import numpy
-import matplotlib.pyplot as plt
 import xlsxwriter
+from matplotlib import pyplot as plt
+
 from SleepQuality.Libraries.AwakeFunction import awakeIntoGroups
 from SleepQuality.Libraries.AuxiliaryFunction import createNewStatusList
 from SleepQuality.Libraries.AuxiliaryFunction import changeExtesionALLGroup
-from SleepQuality.Libraries.notProcessedFile import csvFile
-"Good5Sample.csv"
+from SleepQuality.Libraries.notProcessedFile import csvFile4
+from SleepQuality.Libraries.PlotFunction import createGraphOf
+
+csvFile = csvFile4
 
 elaboratedFiles=[]
-elaboratedFiles = changeExtesionALLGroup(csvFile, "Good5Sample.csv")
-windowToTest = [90, 75, 60]
-minGroupDim = 0
+elaboratedFiles = changeExtesionALLGroup(csvFile, "_Good5Sample.csv")
+windowToTest = [150, 120, 100, 90, 60]
+medianWindow = 5
+minGroupDim = 1 #included
 
-workbook = xlsxwriter.Workbook('../../Archivio/filterAround90.xlsx')
+workbook = xlsxwriter.Workbook('../../Archivio/filter5.xlsx')
 worksheet = workbook.add_worksheet()
 
 column=0;
@@ -27,7 +30,7 @@ for num in windowToTest:
 
 statusGroup = createNewStatusList(windowToTest)
 row = 1;
-for numFile in range(13):
+for numFile in range(len(csvFile)):
   numAwakeGroups = []
   print(elaboratedFiles[numFile])
   data = pd.read_csv(elaboratedFiles[numFile], sep=",")
@@ -35,30 +38,27 @@ for numFile in range(13):
   statusLevel = 2
   awakeGroups= awakeIntoGroups(data, "status")
 
-  statusPoints = numpy.copy(data.loc[data["status"] == 0].index)
-  statusLevelPoints = ["status"] * statusPoints.size
-  plt.scatter(statusPoints, statusLevelPoints, marker=".")
+  createGraphOf('status', data, medianWindow)
+
   column = 0
   for newStatus, windowDim in statusGroup.items():
+    print(newStatus)
     awakeGroups = awakeIntoGroups(data, newStatus)
 
     tmp = []
     print(awakeGroups)
     for i in range(len(awakeGroups)):
-      if awakeGroups[i]>minGroupDim:
+      if awakeGroups[i]>=minGroupDim:
         tmp.append(awakeGroups[i])
     numAwakeGroups.append(len(tmp))
     worksheet.write_number(row, column, len(tmp))
     column +=1
 
-    statusLevel += 2
-    statusPoints = numpy.copy(data.loc[data[newStatus] == 0].index)
-    statusLevelPoints = [newStatus] * statusPoints.size
-    plt.scatter(statusPoints, statusLevelPoints, marker=".")
+    createGraphOf(newStatus, data, medianWindow)
 
-  plt.title(elaboratedFiles[numFile])
-  plt.xlabel("Time")
-  plt.show()
+  #plt.title(elaboratedFiles[numFile])
+  #plt.xlabel("Time")
+  #plt.show()
   row +=1
 
 workbook.close()

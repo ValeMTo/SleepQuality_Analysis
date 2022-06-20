@@ -3,20 +3,22 @@ import numpy
 import matplotlib.pyplot as plt
 import xlsxwriter
 from SleepQuality.Libraries.AwakeFunction import awakeIntoGroups
-from SleepQuality.Libraries.AuxiliaryFunction import createNewStatusAwakeList
+from SleepQuality.Libraries.AuxiliaryFunction import createNewStatusAwakeRange
 from SleepQuality.Libraries.AuxiliaryFunction import changeExtesionALLGroup
-from SleepQuality.Libraries.notProcessedFile import csvFile
+from SleepQuality.Libraries.notProcessedFile import allCsvFiles
+
+csvFile = allCsvFiles
 
 elaboratedFiles=[]
-elaboratedFiles = changeExtesionALLGroup(csvFile, "_AwakeRange.csv" )
+elaboratedFiles = changeExtesionALLGroup(csvFile, "_awakeRange7_70.csv" )
 
 workbook = xlsxwriter.Workbook('../../Archivio/previousAwake.xlsx')
 worksheet = workbook.add_worksheet()
 
-awakeToTest = [0.6, 0.7, 0.8, 0.9, 1]
-minGroupDim=0
+awakeToTest = [0.8, 0.85, 0.9, 0.95, 1]
+minGroupDim=1
 
-statusGroup = createNewStatusAwakeList(awakeToTest)
+statusGroup = createNewStatusAwakeRange(70, awakeToTest)
 column=0;
 for status in statusGroup:
   worksheet.write(0, column, status)
@@ -29,14 +31,14 @@ for numFile in range(len(elaboratedFiles)):
   data = pd.read_csv(elaboratedFiles[numFile], sep=",")
 
   statusLevel = 2
-  awakeGroups= awakeIntoGroups(data, "status", minGroupDim)
+  awakeGroups= awakeIntoGroups(data, "status")
 
   statusPoints = numpy.copy(data.loc[data["status"] == 0].index)
   statusLevelPoints = ["status"] * statusPoints.size
   plt.scatter(statusPoints, statusLevelPoints, marker=".")
   column=0
   for newStatus, windowDim in statusGroup.items():
-    awakeGroups = awakeIntoGroups(data, newStatus, minGroupDim)
+    awakeGroups = awakeIntoGroups(data, newStatus)
 
     tmp = []
     for i in range(len(awakeGroups)):
@@ -51,9 +53,9 @@ for numFile in range(len(elaboratedFiles)):
     statusLevelPoints = [newStatus] * statusPoints.size
     plt.scatter(statusPoints, statusLevelPoints, marker=".")
 
-  plt.title(elaboratedFiles[numFile])
-  plt.xlabel("Time")
-  plt.show()
+  #plt.title(elaboratedFiles[numFile])
+  #plt.xlabel("Time")
+  #plt.show()
   row +=1
 
 workbook.close()
